@@ -1,22 +1,17 @@
-package com.muamerseljubac.entity.models;
+package com.muamerseljubac.entity.dtos.request;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+public class CategoryEditRequestDTO {
 
-    @Id
     private UUID id;
 
     private String name;
-
 }

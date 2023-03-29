@@ -1,9 +1,7 @@
 package com.muamerseljubac.entity.models;
 
 import com.muamerseljubac.entity.enums.BookStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +26,7 @@ public class Book {
     @OneToMany
     private List<Category> categories;
 
+    @Enumerated(EnumType.STRING)
     private BookStatus status;
 
 }

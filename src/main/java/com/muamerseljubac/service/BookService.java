@@ -4,6 +4,7 @@ import com.muamerseljubac.entity.dtos.BookDTO;
 import com.muamerseljubac.entity.dtos.request.BookAddRequestDTO;
 import com.muamerseljubac.entity.dtos.request.BookEditRequestDTO;
 import com.muamerseljubac.entity.dtos.response.BookDeleteResponseDTO;
+import com.muamerseljubac.entity.enums.BookStatus;
 import com.muamerseljubac.entity.models.Book;
 import com.muamerseljubac.mapper.BookMapper;
 import com.muamerseljubac.repository.BookRepository;
@@ -49,5 +50,27 @@ public class BookService {
     public BookDeleteResponseDTO deleteBook(UUID id) {
         bookRepository.deleteById(id);
         return new BookDeleteResponseDTO("Book with ID " + id + " has been deleted!");
+    }
+
+    public BookDTO borrowBook(UUID id) {
+        Book borrowBook = bookRepository.findById(id).orElse(null);
+        if (borrowBook != null) {
+            borrowBook.setStatus(BookStatus.BORROWED);
+            bookRepository.save(borrowBook);
+            return bookMapper.bookToBookDto(borrowBook);
+        } else {
+            return null;
+        }
+    }
+
+    public BookDTO returnBook(UUID id) {
+        Book borrowBook = bookRepository.findById(id).orElse(null);
+        if (borrowBook != null) {
+            borrowBook.setStatus(BookStatus.FREE);
+            bookRepository.save(borrowBook);
+            return bookMapper.bookToBookDto(borrowBook);
+        } else {
+            return null;
+        }
     }
 }

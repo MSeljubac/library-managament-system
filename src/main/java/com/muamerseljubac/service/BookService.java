@@ -35,6 +35,7 @@ public class BookService {
 
     public BookDTO addBook(BookRequestDTO requestDTO) {
         Book newBook = bookMapper.bookRequestDtoToBook(requestDTO);
+        newBook.setId(UUID.randomUUID());
         bookRepository.save(newBook);
         return bookMapper.bookToBookDto(newBook);
     }

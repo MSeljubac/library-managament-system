@@ -2,7 +2,7 @@ package com.muamerseljubac.controller;
 
 import com.muamerseljubac.entity.dtos.BookDTO;
 import com.muamerseljubac.entity.dtos.request.BookEditRequestDTO;
-import com.muamerseljubac.entity.dtos.request.BookRequestDTO;
+import com.muamerseljubac.entity.dtos.request.BookAddRequestDTO;
 import com.muamerseljubac.entity.dtos.response.BookDeleteResponseDTO;
 import com.muamerseljubac.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class BookController {
     }
 
     @PostMapping("")
-    public ResponseEntity<BookDTO> addBook(@RequestBody BookRequestDTO requestDTO) {
+    public ResponseEntity<BookDTO> addBook(@RequestBody BookAddRequestDTO requestDTO) {
         return new ResponseEntity<>(bookService.addBook(requestDTO), HttpStatus.OK);
     }
 

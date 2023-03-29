@@ -17,4 +17,6 @@ public class Author {
     @Id
     private UUID id;
 
+    private String name;
+
 }

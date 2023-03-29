@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookRequestDTO {
+public class BookAddRequestDTO {
 
     private String title;
 

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -16,9 +17,9 @@ public class BookDTO {
 
     private String title;
 
-    private AuthorDTO author;
+    private List<AuthorDTO> authors;
 
-    private CategoryDTO category;
+    private List<CategoryDTO> categories;
 
     private BookStatus status;
 

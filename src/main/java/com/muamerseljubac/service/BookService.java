@@ -1,8 +1,8 @@
 package com.muamerseljubac.service;
 
 import com.muamerseljubac.entity.dtos.BookDTO;
+import com.muamerseljubac.entity.dtos.request.BookAddRequestDTO;
 import com.muamerseljubac.entity.dtos.request.BookEditRequestDTO;
-import com.muamerseljubac.entity.dtos.request.BookRequestDTO;
 import com.muamerseljubac.entity.dtos.response.BookDeleteResponseDTO;
 import com.muamerseljubac.entity.models.Book;
 import com.muamerseljubac.mapper.BookMapper;
@@ -33,7 +33,7 @@ public class BookService {
         return bookRepository.findAll().stream().map(bookMapper::bookToBookDto).toList();
     }
 
-    public BookDTO addBook(BookRequestDTO requestDTO) {
+    public BookDTO addBook(BookAddRequestDTO requestDTO) {
         Book newBook = bookMapper.bookRequestDtoToBook(requestDTO);
         newBook.setId(UUID.randomUUID());
         bookRepository.save(newBook);

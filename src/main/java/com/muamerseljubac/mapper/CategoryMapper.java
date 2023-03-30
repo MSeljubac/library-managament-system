@@ -1,6 +1,6 @@
 package com.muamerseljubac.mapper;
 
-import com.muamerseljubac.entity.dtos.CategoryAddRequestDTO;
+import com.muamerseljubac.entity.dtos.request.CategoryAddRequestDTO;
 import com.muamerseljubac.entity.dtos.CategoryDTO;
 import com.muamerseljubac.entity.dtos.request.CategoryEditRequestDTO;
 import com.muamerseljubac.entity.models.Category;

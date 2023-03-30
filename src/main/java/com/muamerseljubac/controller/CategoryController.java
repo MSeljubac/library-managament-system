@@ -1,9 +1,10 @@
 package com.muamerseljubac.controller;
 
-import com.muamerseljubac.entity.dtos.CategoryAddRequestDTO;
 import com.muamerseljubac.entity.dtos.CategoryDTO;
+import com.muamerseljubac.entity.dtos.request.CategoryAddRequestDTO;
 import com.muamerseljubac.entity.dtos.request.CategoryEditRequestDTO;
 import com.muamerseljubac.entity.dtos.response.CategoryDeleteResponseDTO;
+import com.muamerseljubac.entity.dtos.response.ErrorResponseDTO;
 import com.muamerseljubac.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,11 @@ public class CategoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<CategoryDeleteResponseDTO> deleteCategory(@PathVariable("id") UUID id) {
         return new ResponseEntity<>(categoryService.deleteCategory(id), HttpStatus.OK);
+    }
+
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<ErrorResponseDTO> handleException(Exception ex) {
+        return new ResponseEntity<>(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }

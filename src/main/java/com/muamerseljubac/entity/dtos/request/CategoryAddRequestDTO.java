@@ -1,4 +1,4 @@
-package com.muamerseljubac.entity.dtos;
+package com.muamerseljubac.entity.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -10,6 +10,7 @@ import com.muamerseljubac.mapper.BookMapper;
 import com.muamerseljubac.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class BookService {
         return bookMapper.bookToBookDto(bookRepository.findById(id).orElse(null));
     }
 
-    public List<BookDTO> getAllBooks(int page) {
-        return bookRepository.findAll(PageRequest.of(page, 10))
+    public List<BookDTO> getAllBooks(int page, String sort) {
+        return bookRepository.findAll(PageRequest.of(page, 10, sort != null ? Sort.by(sort) : Sort.by("title")))
                 .stream()
                 .map(bookMapper::bookToBookDto)
                 .toList();

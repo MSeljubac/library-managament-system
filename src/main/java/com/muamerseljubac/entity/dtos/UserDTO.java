@@ -7,12 +7,18 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AuthorDTO {
+@NoArgsConstructor
+public class UserDTO {
 
     private UUID id;
 
-    private String name;
+    private String firstName;
+
+    private String lastName;
+
+    private String email;
+
+    private String roles;
 
 }

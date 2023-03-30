@@ -1,13 +1,17 @@
 package com.muamerseljubac.service;
 
 import com.muamerseljubac.entity.dtos.BookDTO;
+import com.muamerseljubac.entity.dtos.request.BookAddRequestDTO;
 import com.muamerseljubac.entity.dtos.request.BookEditRequestDTO;
-import com.muamerseljubac.entity.dtos.request.BookRequestDTO;
 import com.muamerseljubac.entity.dtos.response.BookDeleteResponseDTO;
+import com.muamerseljubac.entity.enums.BookStatus;
 import com.muamerseljubac.entity.models.Book;
 import com.muamerseljubac.mapper.BookMapper;
 import com.muamerseljubac.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,14 +30,25 @@ public class BookService {
     }
 
     public BookDTO getBook(UUID id) {
-        return bookMapper.bookToBookDto(bookRepository.findById(id).orElse(null));
+        if (bookRepository.existsById(id)) {
+            return bookMapper.bookToBookDto(bookRepository.findById(id).orElse(null));
+        } else {
+            throw new RuntimeException("Book not found!");
+        }
     }
 
-    public List<BookDTO> getAllBooks() {
-        return bookRepository.findAll().stream().map(bookMapper::bookToBookDto).toList();
+    public List<BookDTO> getAllBooks(int page, String sort) {
+        try {
+            return bookRepository.findAll(PageRequest.of(page, 10, sort != null ? Sort.by(sort) : Sort.by("title")))
+                    .stream()
+                    .map(bookMapper::bookToBookDto)
+                    .toList();
+        } catch (PropertyReferenceException pre) {
+            throw new RuntimeException("Sort parameter invalid!");
+        }
     }
 
-    public BookDTO addBook(BookRequestDTO requestDTO) {
+    public BookDTO addBook(BookAddRequestDTO requestDTO) {
         Book newBook = bookMapper.bookRequestDtoToBook(requestDTO);
         newBook.setId(UUID.randomUUID());
         bookRepository.save(newBook);
@@ -41,13 +56,43 @@ public class BookService {
     }
 
     public BookDTO editBook(BookEditRequestDTO requestDTO) {
-        Book editBook = bookMapper.bookEditRequestDtoToBook(requestDTO);
-        bookRepository.save(editBook);
-        return bookMapper.bookToBookDto(editBook);
+        if (bookRepository.existsById(requestDTO.getId())) {
+            Book editBook = bookMapper.bookEditRequestDtoToBook(requestDTO);
+            bookRepository.save(editBook);
+            return bookMapper.bookToBookDto(editBook);
+        } else {
+            throw new RuntimeException("Book not found!");
+        }
     }
 
     public BookDeleteResponseDTO deleteBook(UUID id) {
-        bookRepository.deleteById(id);
-        return new BookDeleteResponseDTO("Book with ID " + id + " has been deleted!");
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+            return new BookDeleteResponseDTO("Book with ID " + id + " has been deleted!");
+        } else {
+            throw new RuntimeException("Book not found!");
+        }
+    }
+
+    public BookDTO borrowBook(UUID id) {
+        Book borrowBook = bookRepository.findById(id).orElse(null);
+        if (borrowBook != null) {
+            borrowBook.setStatus(BookStatus.BORROWED);
+            bookRepository.save(borrowBook);
+            return bookMapper.bookToBookDto(borrowBook);
+        } else {
+            throw new RuntimeException("Book not found!");
+        }
+    }
+
+    public BookDTO returnBook(UUID id) {
+        Book borrowBook = bookRepository.findById(id).orElse(null);
+        if (borrowBook != null) {
+            borrowBook.setStatus(BookStatus.FREE);
+            bookRepository.save(borrowBook);
+            return bookMapper.bookToBookDto(borrowBook);
+        } else {
+            throw new RuntimeException("Book not found!");
+        }
     }
 }

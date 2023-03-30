@@ -4,6 +4,7 @@ import com.muamerseljubac.entity.dtos.AuthorDTO;
 import com.muamerseljubac.entity.dtos.request.AuthorAddRequestDTO;
 import com.muamerseljubac.entity.dtos.request.AuthorEditRequestDTO;
 import com.muamerseljubac.entity.dtos.response.AuthorDeleteResponseDTO;
+import com.muamerseljubac.entity.dtos.response.ErrorResponseDTO;
 import com.muamerseljubac.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,4 +51,8 @@ public class AuthorController {
         return new ResponseEntity<AuthorDeleteResponseDTO>(authorService.deleteAuthor(id), HttpStatus.OK);
     }
 
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<ErrorResponseDTO> handleException(Exception ex) {
+        return new ResponseEntity<>(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }

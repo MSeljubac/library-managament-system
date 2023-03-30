@@ -4,6 +4,7 @@ import com.muamerseljubac.entity.dtos.BookDTO;
 import com.muamerseljubac.entity.dtos.request.BookAddRequestDTO;
 import com.muamerseljubac.entity.dtos.request.BookEditRequestDTO;
 import com.muamerseljubac.entity.dtos.response.BookDeleteResponseDTO;
+import com.muamerseljubac.entity.dtos.response.ErrorResponseDTO;
 import com.muamerseljubac.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,6 +59,11 @@ public class BookController {
     @PostMapping("/return/{id}")
     public ResponseEntity<BookDTO> returnBook(@PathVariable("id") UUID id) {
         return new ResponseEntity<>(bookService.returnBook(id), HttpStatus.OK);
+    }
+
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<ErrorResponseDTO> handleException(Exception ex) {
+        return new ResponseEntity<>(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }

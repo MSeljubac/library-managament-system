@@ -10,6 +10,7 @@ import com.muamerseljubac.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,24 +36,40 @@ public class AuthorService {
     }
 
     public AuthorDTO getAuthor(UUID id) {
-        return authorMapper.authorToAuthorDto(authorRepository.findById(id).orElse(null));
+        if (authorRepository.existsById(id)) {
+            return authorMapper.authorToAuthorDto(authorRepository.findById(id).orElse(null));
+        } else {
+            throw new RuntimeException("Author not found!");
+        }
     }
 
     public List<AuthorDTO> getAllAuthors(int page, String sort) {
-        return authorRepository.findAll(PageRequest.of(page, 10, sort != null ? Sort.by(sort) : Sort.by("name")))
-                .stream()
-                .map(authorMapper::authorToAuthorDto)
-                .toList();
+        try {
+            return authorRepository.findAll(PageRequest.of(page, 10, sort != null ? Sort.by(sort) : Sort.by("name")))
+                    .stream()
+                    .map(authorMapper::authorToAuthorDto)
+                    .toList();
+        } catch (PropertyReferenceException pre) {
+            throw new RuntimeException("Sort parameter invalid!");
+        }
     }
 
     public AuthorDTO editAuthor(AuthorEditRequestDTO requestDTO) {
-        Author author = authorMapper.authorEditRequestDtoToAuthor(requestDTO);
-        authorRepository.save(author);
-        return authorMapper.authorToAuthorDto(author);
+        if (authorRepository.existsById(requestDTO.getId())) {
+            Author author = authorMapper.authorEditRequestDtoToAuthor(requestDTO);
+            authorRepository.save(author);
+            return authorMapper.authorToAuthorDto(author);
+        } else {
+            throw new RuntimeException("Author not found!");
+        }
     }
 
     public AuthorDeleteResponseDTO deleteAuthor(UUID id) {
-        authorRepository.deleteById(id);
-        return new AuthorDeleteResponseDTO("Author with ID " + id + " successfully deleted!");
+        if (authorRepository.existsById(id)) {
+            authorRepository.deleteById(id);
+            return new AuthorDeleteResponseDTO("Author with ID " + id + " successfully deleted!");
+        } else {
+            throw new RuntimeException("Author not found!");
+        }
     }
 }

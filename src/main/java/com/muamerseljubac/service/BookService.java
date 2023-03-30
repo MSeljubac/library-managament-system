@@ -11,6 +11,7 @@ import com.muamerseljubac.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,14 +30,22 @@ public class BookService {
     }
 
     public BookDTO getBook(UUID id) {
-        return bookMapper.bookToBookDto(bookRepository.findById(id).orElse(null));
+        if (bookRepository.existsById(id)) {
+            return bookMapper.bookToBookDto(bookRepository.findById(id).orElse(null));
+        } else {
+            throw new RuntimeException("Book not found!");
+        }
     }
 
     public List<BookDTO> getAllBooks(int page, String sort) {
-        return bookRepository.findAll(PageRequest.of(page, 10, sort != null ? Sort.by(sort) : Sort.by("title")))
-                .stream()
-                .map(bookMapper::bookToBookDto)
-                .toList();
+        try {
+            return bookRepository.findAll(PageRequest.of(page, 10, sort != null ? Sort.by(sort) : Sort.by("title")))
+                    .stream()
+                    .map(bookMapper::bookToBookDto)
+                    .toList();
+        } catch (PropertyReferenceException pre) {
+            throw new RuntimeException("Sort parameter invalid!");
+        }
     }
 
     public BookDTO addBook(BookAddRequestDTO requestDTO) {
@@ -47,14 +56,22 @@ public class BookService {
     }
 
     public BookDTO editBook(BookEditRequestDTO requestDTO) {
-        Book editBook = bookMapper.bookEditRequestDtoToBook(requestDTO);
-        bookRepository.save(editBook);
-        return bookMapper.bookToBookDto(editBook);
+        if (bookRepository.existsById(requestDTO.getId())) {
+            Book editBook = bookMapper.bookEditRequestDtoToBook(requestDTO);
+            bookRepository.save(editBook);
+            return bookMapper.bookToBookDto(editBook);
+        } else {
+            throw new RuntimeException("Book not found!");
+        }
     }
 
     public BookDeleteResponseDTO deleteBook(UUID id) {
-        bookRepository.deleteById(id);
-        return new BookDeleteResponseDTO("Book with ID " + id + " has been deleted!");
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+            return new BookDeleteResponseDTO("Book with ID " + id + " has been deleted!");
+        } else {
+            throw new RuntimeException("Book not found!");
+        }
     }
 
     public BookDTO borrowBook(UUID id) {
@@ -64,7 +81,7 @@ public class BookService {
             bookRepository.save(borrowBook);
             return bookMapper.bookToBookDto(borrowBook);
         } else {
-            return null;
+            throw new RuntimeException("Book not found!");
         }
     }
 
@@ -75,7 +92,7 @@ public class BookService {
             bookRepository.save(borrowBook);
             return bookMapper.bookToBookDto(borrowBook);
         } else {
-            return null;
+            throw new RuntimeException("Book not found!");
         }
     }
 }

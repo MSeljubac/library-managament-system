@@ -8,6 +8,8 @@ import com.muamerseljubac.entity.models.Category;
 import com.muamerseljubac.mapper.CategoryMapper;
 import com.muamerseljubac.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,8 +38,11 @@ public class CategoryService {
         return categoryMapper.categoryToCategoryDto(categoryRepository.findById(id).orElse(null));
     }
 
-    public List<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll().stream().map(categoryMapper::categoryToCategoryDto).toList();
+    public List<CategoryDTO> getAllCategories(int page, String sort) {
+        return categoryRepository.findAll(PageRequest.of(page, 10, sort != null ? Sort.by(sort) : Sort.by("name")))
+                .stream()
+                .map(categoryMapper::categoryToCategoryDto)
+                .toList();
     }
 
     public CategoryDTO editCategory(CategoryEditRequestDTO requestDTO) {

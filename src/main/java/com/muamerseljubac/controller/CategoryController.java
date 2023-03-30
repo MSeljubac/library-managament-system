@@ -29,9 +29,10 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.getCategory(id), HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
+    @GetMapping("/all/{page}")
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(@PathVariable int page,
+                                                              @RequestParam(value = "sort", required = false) String sort) {
+        return new ResponseEntity<>(categoryService.getAllCategories(page, sort), HttpStatus.OK);
     }
 
     @PostMapping("")

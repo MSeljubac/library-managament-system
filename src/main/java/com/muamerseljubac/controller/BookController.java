@@ -29,9 +29,10 @@ public class BookController {
         return new ResponseEntity<>(bookService.getBook(id), HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<BookDTO>> getAllBooks() {
-        return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
+    @GetMapping("/all/{page}")
+    public ResponseEntity<List<BookDTO>> getAllBooks(@PathVariable("page") int page,
+                                                     @RequestParam(value = "sort", required = false) String sort) {
+        return new ResponseEntity<>(bookService.getAllBooks(page, sort), HttpStatus.OK);
     }
 
     @PostMapping("")

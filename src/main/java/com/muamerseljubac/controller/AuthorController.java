@@ -29,9 +29,10 @@ public class AuthorController {
         return new ResponseEntity<>(authorService.getAuthor(id), HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
-        return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
+    @GetMapping("/all/{page}")
+    public ResponseEntity<List<AuthorDTO>> getAllAuthors(@PathVariable("page") int page,
+                                                         @RequestParam(value = "sort", required = false) String sort) {
+        return new ResponseEntity<>(authorService.getAllAuthors(page, sort), HttpStatus.OK);
     }
 
     @PostMapping("")

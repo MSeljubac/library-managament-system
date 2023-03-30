@@ -29,9 +29,9 @@ public class BookController {
         return new ResponseEntity<>(bookService.getBook(id), HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<BookDTO>> getAllBooks() {
-        return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
+    @GetMapping("/all/{page}")
+    public ResponseEntity<List<BookDTO>> getAllBooks(@PathVariable("page") int page) {
+        return new ResponseEntity<>(bookService.getAllBooks(page), HttpStatus.OK);
     }
 
     @PostMapping("")

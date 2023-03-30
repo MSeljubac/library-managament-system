@@ -8,6 +8,7 @@ import com.muamerseljubac.entity.models.Author;
 import com.muamerseljubac.mapper.AuthorMapper;
 import com.muamerseljubac.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,8 +37,11 @@ public class AuthorService {
         return authorMapper.authorToAuthorDto(authorRepository.findById(id).orElse(null));
     }
 
-    public List<AuthorDTO> getAllAuthors() {
-        return authorRepository.findAll().stream().map(authorMapper::authorToAuthorDto).toList();
+    public List<AuthorDTO> getAllAuthors(int page) {
+        return authorRepository.findAll(PageRequest.of(page, 10))
+                .stream()
+                .map(authorMapper::authorToAuthorDto)
+                .toList();
     }
 
     public AuthorDTO editAuthor(AuthorEditRequestDTO requestDTO) {

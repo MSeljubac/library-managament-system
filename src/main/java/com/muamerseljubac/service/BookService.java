@@ -9,6 +9,7 @@ import com.muamerseljubac.entity.models.Book;
 import com.muamerseljubac.mapper.BookMapper;
 import com.muamerseljubac.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,8 +31,11 @@ public class BookService {
         return bookMapper.bookToBookDto(bookRepository.findById(id).orElse(null));
     }
 
-    public List<BookDTO> getAllBooks() {
-        return bookRepository.findAll().stream().map(bookMapper::bookToBookDto).toList();
+    public List<BookDTO> getAllBooks(int page) {
+        return bookRepository.findAll(PageRequest.of(page, 10))
+                .stream()
+                .map(bookMapper::bookToBookDto)
+                .toList();
     }
 
     public BookDTO addBook(BookAddRequestDTO requestDTO) {
